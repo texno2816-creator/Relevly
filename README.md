@@ -6,7 +6,7 @@ An AI guide that searches hundreds of millions of research papers and keeps only
 
 ## Why I built it
 
-In June 2026 I started a research paper on how quickly an AI reaches a plateau during training. I found more than 2,000 papers, and reading and judging each one took me over two hours. Most of them only applied machine learning in other fields, such as chemistry or biology, but search engines still showed them because the words matched. I built ResearchLens so that students like me can skip that filtering and spend their time on the papers that matter.
+In June 2026 I started a research paper on how quickly an AI reaches a plateau during training. I found more than 2,000 papers. I planned to go through the first 50, but each of the first papers took me more than two hours to read and judge. Most of them only applied machine learning in other fields, such as chemistry or biology, but search engines still showed them because the words matched. I built ResearchLens so that students like me can skip that filtering and spend their time on the papers that matter.
 
 ## How it works
 
