@@ -228,7 +228,9 @@ def about():
 @app.route("/test-login", methods=["GET", "POST"])
 def test_login():
     if request.method == "POST":
-        if request.form.get("password") == config.ADMIN_PASSWORD:
+        # On the public site the default password from .env.example never works
+        default_pw = config.ADMIN_PASSWORD == "change-me" and not config.DEBUG
+        if not default_pw and request.form.get("password") == config.ADMIN_PASSWORD:
             session["test_mode"] = True
             target = request.args.get("next") or ""
             return redirect(target if target.startswith("/") else url_for("admin"))
