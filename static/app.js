@@ -55,7 +55,7 @@
     if (!scan) return;
     var stepEl = $("[data-scan-step]", scan);
     var bars = $all(".scan-progress li", scan);
-    $("[data-scan-query]", scan).textContent = query ? "«" + query + "»" : "";
+    $("[data-scan-query]", scan).textContent = query ? "“" + query + "”" : "";
     stepEl.textContent = steps[0];
     bars.forEach(function (b, i) { b.classList.toggle("is-done", i === 0); });
     scan.hidden = false;
