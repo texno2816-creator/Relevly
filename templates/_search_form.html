@@ -1,15 +1,15 @@
 <form action="{{ url_for('search') }}" method="get" class="search {{ 'search--hero' if hero else 'search--compact' }}" data-search-form role="search">
   <div class="search-card">
-    <label class="search-label" for="q{{ '-hero' if hero else '' }}"><span>Тема исследования</span><span aria-hidden="true">Карточка запроса</span></label>
+    <label class="search-label" for="q{{ '-hero' if hero else '' }}"><span>Research topic</span><span aria-hidden="true">Query card</span></label>
     <div class="search-row">
       <input id="q{{ '-hero' if hero else '' }}" type="search" name="q" value="{{ query or '' }}" autocomplete="off" required
-             placeholder="{{ 'О чём твоё исследование?' if hero else 'Новый поиск' }}" {% if hero %}data-typing{% else %}aria-label="Тема исследования"{% endif %}>
-      <button type="submit" class="btn btn-primary search-submit">Найти<svg class="arrow" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+             placeholder="{{ 'What is your research about?' if hero else 'New search' }}" {% if hero %}data-typing{% else %}aria-label="Research topic"{% endif %}>
+      <button type="submit" class="btn btn-primary search-submit">Search<svg class="arrow" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     </div>
     <div class="search-options">
-      <label class="switch"><input type="checkbox" name="paid" value="1" {% if paid_checked %}checked{% endif %}><span class="switch-track" aria-hidden="true"></span>Показать и платные статьи</label>
+      <label class="switch"><input type="checkbox" name="paid" value="1" {% if paid_checked %}checked{% endif %}><span class="switch-track" aria-hidden="true"></span>Include paywalled articles</label>
       {% if test_mode %}
-        <label class="switch"><input type="checkbox" name="fresh" value="1"><span class="switch-track" aria-hidden="true"></span>Оценить заново, без кэша</label>
+        <label class="switch"><input type="checkbox" name="fresh" value="1"><span class="switch-track" aria-hidden="true"></span>Score again, skip cache</label>
       {% endif %}
     </div>
   </div>

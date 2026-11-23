@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Тестовый режим — ResearchLens{% endblock %}
+{% block title %}Test mode — ResearchLens{% endblock %}
 {% block content %}
 <section class="page-band band narrow">
   <div class="wrap">
-    <p class="kicker">Для разработчика</p>
-    <h1>Тестовый режим</h1>
-    <p class="lead">Показывает все оценённые статьи, время, токены и открывает админку.</p>
+    <p class="kicker">For the developer</p>
+    <h1>Test mode</h1>
+    <p class="lead">Shows all scored papers, time and tokens, and opens the admin page.</p>
     <form method="post" class="login-form">
-      <label for="password">Пароль из файла .env</label>
+      <label for="password">Password</label>
       <input id="password" type="password" name="password" required autofocus>
-      <button type="submit" class="btn btn-primary">Войти</button>
+      <button type="submit" class="btn btn-primary">Log in</button>
     </form>
   </div>
 </section>

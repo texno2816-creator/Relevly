@@ -9,36 +9,36 @@
     <div class="summary">
       {% if original_query and original_query | lower != search.query | lower %}
       <p class="corrected">
-        Показаны результаты по запросу <b>{{ search.query }}</b>.
-        Искать именно <a href="{{ url_for('search', q=original_query, exact='1', paid=('0' if free_only else '1')) }}" data-search-link>{{ original_query }}</a>
+        Showing results for <b>{{ search.query }}</b>.
+        Search instead for <a href="{{ url_for('search', q=original_query, exact='1', paid=('0' if free_only else '1')) }}" data-search-link>{{ original_query }}</a>
       </p>
       {% endif %}
-      <p class="kicker">Картотека по запросу</p>
+      <p class="kicker">Catalogue for the query</p>
       <h1 class="summary-query">{{ search.query }}</h1>
       <p class="summary-line">
         {% if search.openalex_total %}
-        В OpenAlex нашлось {{ "{:,}".format(search.openalex_total).replace(",", " ") }} статей{{ "" if free_only else ", включая платные" }}.
-        ИИ прочитал первые {{ s.total }}, подходят <b>{{ visible_count }}</b>.
+        OpenAlex found {{ "{:,}".format(search.openalex_total) }} papers{{ "" if free_only else ", including paywalled ones" }}.
+        The AI read the first {{ s.total }}, and <b>{{ visible_count }}</b> fit.
         {% else %}
-        В OpenAlex по этому запросу ничего не нашлось.
+        OpenAlex found nothing for this query.
         {% endif %}
       </p>
 
       {% if dots %}
-      <div class="dots" aria-label="Каждая полоска — одна прочитанная статья, высота — её оценка">
+      <div class="dots" aria-label="Each bar is one paper the AI read; its height is the score">
         <ol class="dots-row">
           {% for a in dots %}
             {% if a.id in shown_ids %}
-              <li><a class="dotlink cat-{{ a.category | lower }}" href="#p-{{ a.id }}" data-dot="p-{{ a.id }}" style="--i: {{ loop.index0 }}; --s: {{ a.score }}"><span class="visually-hidden">{{ a.title }}, </span><span class="dot-tip"><b>{{ ('%.1f' | format(a.score)).replace('.', ',') }}</b>{{ a.title }}</span></a></li>
+              <li><a class="dotlink cat-{{ a.category | lower }}" href="#p-{{ a.id }}" data-dot="p-{{ a.id }}" style="--i: {{ loop.index0 }}; --s: {{ a.score }}"><span class="visually-hidden">{{ a.title }}, </span><span class="dot-tip"><b>{{ '%.1f' | format(a.score) }}</b>{{ a.title }}</span></a></li>
             {% else %}
-              <li><span class="dotlink cat-{{ a.category | lower }} is-hidden" style="--i: {{ loop.index0 }}; --s: {{ a.score }}" title="Скрыта: не подходит"></span></li>
+              <li><span class="dotlink cat-{{ a.category | lower }} is-hidden" style="--i: {{ loop.index0 }}; --s: {{ a.score }}" title="Hidden: does not fit"></span></li>
             {% endif %}
           {% endfor %}
         </ol>
         <ul class="dist-legend">
-          <li><i class="dot-yes"></i>Подходят: {{ s.yes }}</li>
-          <li><i class="dot-unclear"></i>Частично: {{ s.unclear }}</li>
-          <li><i class="dot-no"></i>Не подходят, скрыты: {{ s.no }}</li>
+          <li><i class="dot-yes"></i>Fit: {{ s.yes }}</li>
+          <li><i class="dot-unclear"></i>Partly: {{ s.unclear }}</li>
+          <li><i class="dot-no"></i>No fit, hidden: {{ s.no }}</li>
         </ul>
       </div>
       {% endif %}
@@ -46,19 +46,19 @@
 
     {% if test_mode %}
     <div class="test-panel">
-      <p class="test-panel-title">Тестовый режим — видны все оценённые статьи, включая «Не подходит»</p>
+      <p class="test-panel-title">Test mode: all scored papers are shown, including “No fit”</p>
       <dl>
-        <div><dt>Модель</dt><dd>{{ search.model }}</dd></div>
-        <div><dt>Провайдер</dt><dd>{{ search.provider }}</dd></div>
-        <div><dt>Правила оценки</dt><dd>версия {{ search.version or "1" }}</dd></div>
-        <div><dt>Время оценки</dt><dd>{{ s.seconds }} с</dd></div>
-        <div><dt>Токены</dt><dd>{{ s.tokens }}</dd></div>
-        <div><dt>Без аннотации</dt><dd>{{ s.no_abstract }}</dd></div>
-        <div><dt>Убрано дубликатов</dt><dd>{{ s.duplicates if s.duplicates is defined else "—" }}</dd></div>
-        <div><dt>Ошибок ИИ</dt><dd>{{ s.errors }}</dd></div>
-        <div><dt>Поиск от</dt><dd>{{ search.created }}</dd></div>
+        <div><dt>Model</dt><dd>{{ search.model }}</dd></div>
+        <div><dt>Provider</dt><dd>{{ search.provider }}</dd></div>
+        <div><dt>Scoring rules</dt><dd>version {{ search.version or "1" }}</dd></div>
+        <div><dt>Scoring time</dt><dd>{{ s.seconds }} s</dd></div>
+        <div><dt>Tokens</dt><dd>{{ s.tokens }}</dd></div>
+        <div><dt>No abstract</dt><dd>{{ s.no_abstract }}</dd></div>
+        <div><dt>Duplicates removed</dt><dd>{{ s.duplicates if s.duplicates is defined else "—" }}</dd></div>
+        <div><dt>AI errors</dt><dd>{{ s.errors }}</dd></div>
+        <div><dt>Searched at</dt><dd>{{ search.created }}</dd></div>
       </dl>
-      <a class="btn btn-ghost btn-small" href="{{ url_for('search', q=search.query, paid=('0' if free_only else '1'), fresh='1') }}" data-scan-link>Оценить заново</a>
+      <a class="btn btn-ghost btn-small" href="{{ url_for('search', q=search.query, paid=('0' if free_only else '1'), fresh='1') }}" data-scan-link>Score again</a>
     </div>
     {% endif %}
   </div>
@@ -67,36 +67,34 @@
 {% if visible_count == 0 %}
 <section class="empty">
   {% if not search.openalex_total %}
-    <h2>OpenAlex не нашёл ни одной статьи по этому запросу</h2>
-    <p>Чаще всего причина — опечатка или очень редкое сочетание слов. Что можно сделать:</p>
+    <h2>OpenAlex found no papers for this query</h2>
+    <p>Usually the reason is a typo or a very rare combination of words. What you can do:</p>
     <ul>
-      <li>проверить написание слов;</li>
-      <li>сформулировать запрос проще и короче;</li>
-      {% if free_only %}<li>включить «Показать и платные статьи»;</li>{% endif %}
-      <li>написать запрос на английском — в OpenAlex большинство статей на нём.</li>
+      <li>check the spelling;</li>
+      <li>make the query simpler and shorter;</li>
+      {% if free_only %}<li>turn on “Include paywalled articles”;</li>{% endif %}
     </ul>
   {% elif s.total == 0 %}
-    <h2>Статьи нашлись, но ни у одной нет аннотации</h2>
-    <p>Без аннотации ИИ не может честно оценить статью. Список найденных статей — внизу страницы, проверь их сам или переформулируй запрос.</p>
+    <h2>Papers were found, but none of them has an abstract</h2>
+    <p>Without an abstract the AI cannot score a paper fairly. The list of found papers is at the bottom of the page: check them yourself or rephrase the query.</p>
   {% else %}
-    <h2>Подходящих статей среди первых {{ s.total }} нет</h2>
-    <p>Так бывает, когда тема очень узкая или по ней мало исследований. Что можно сделать:</p>
+    <h2>None of the first {{ s.total }} papers fit</h2>
+    <p>This happens when the topic is very narrow or has little research. What you can do:</p>
     <ul>
-      <li>сформулировать запрос шире или убрать уточнения (возраст, страну, годы);</li>
-      {% if free_only %}<li>включить «Показать и платные статьи» — выбор станет больше;</li>{% endif %}
-      <li>написать запрос на английском — в OpenAlex большинство статей на нём.</li>
+      <li>make the query broader or remove details (age, country, years);</li>
+      {% if free_only %}<li>turn on “Include paywalled articles” for a wider choice;</li>{% endif %}
     </ul>
   {% endif %}
   <details class="support">
-    <summary class="btn btn-ghost">Сообщить, что поиск не сработал</summary>
+    <summary class="btn btn-ghost">Report that the search did not work</summary>
     <form action="{{ url_for('support') }}" method="post" class="support-form">
       <input type="hidden" name="query" value="{{ search.query }}">
       <input type="hidden" name="back" value="{{ request.path }}">
-      <label for="support-msg">Что ты искал и что ожидал найти?</label>
+      <label for="support-msg">What were you looking for, and what did you expect to find?</label>
       <textarea id="support-msg" name="message" rows="3" required></textarea>
-      <label for="support-contact">Почта для ответа, по желанию</label>
+      <label for="support-contact">Email for a reply (optional)</label>
       <input id="support-contact" type="email" name="contact">
-      <button type="submit" class="btn btn-primary">Отправить</button>
+      <button type="submit" class="btn btn-primary">Send</button>
     </form>
   </details>
 </section>
@@ -105,27 +103,27 @@
 {% if articles %}
 {% set focus_min = 0 if test_mode else 4 %}
 <div class="results-layout">
-  <aside class="rail" aria-label="Фильтры">
+  <aside class="rail" aria-label="Filters">
     <button type="button" class="rail-toggle btn btn-ghost" data-rail-toggle aria-expanded="false" aria-controls="rail-body">
-      <svg aria-hidden="true"><use href="#i-filter"/></svg>Фильтры<span class="rail-badge" data-rail-badge hidden></span>
+      <svg aria-hidden="true"><use href="#i-filter"/></svg>Filters<span class="rail-badge" data-rail-badge hidden></span>
     </button>
     <div class="rail-body" id="rail-body" data-rail-body>
       <div class="rail-block">
         <div class="rail-head">
-          <label for="f-focus">Фокус</label>
-          <output for="f-focus" data-focus-out>от {{ ('%.1f' | format(focus_min)).replace('.', ',') }}</output>
+          <label for="f-focus">Focus</label>
+          <output for="f-focus" data-focus-out>from {{ '%.1f' | format(focus_min) }}</output>
         </div>
         <input id="f-focus" class="focus-range" type="range" min="{{ focus_min }}" max="10" step="0.5"
                value="{{ focus_min }}" data-filter="focus" aria-describedby="focus-hint">
         <div class="ruler-labels" aria-hidden="true">
           {% if test_mode %}{% for n in [0, 2, 4, 6, 8, 10] %}<span>{{ n }}</span>{% endfor %}{% else %}{% for n in range(4, 11) %}<span>{{ n }}</span>{% endfor %}{% endif %}
         </div>
-        <p class="rail-hint" id="focus-hint">Сдвинь вправо, чтобы оставить только самые точные совпадения. От 7,5 — «подходит».</p>
+        <p class="rail-hint" id="focus-hint">Move right to keep only the closest matches. From 7.5 a paper “fits”.</p>
       </div>
 
       {% if types %}
       <div class="rail-block">
-        <p class="rail-label">Тип работы</p>
+        <p class="rail-label">Type of work</p>
         <div class="toggles">
           {% for t, n in types %}
             <button type="button" class="toggle" data-type-toggle="{{ t }}" aria-pressed="true">{{ work_type_labels[t] }}<span class="count">{{ n }}</span></button>
@@ -135,14 +133,14 @@
       {% endif %}
 
       <div class="rail-block">
-        <p class="rail-label">Годы</p>
+        <p class="rail-label">Years</p>
         <div class="year-inputs">
-          <label><span class="visually-hidden">С года</span><input type="number" inputmode="numeric" placeholder="с" data-filter="year-from"></label>
+          <label><span class="visually-hidden">From year</span><input type="number" inputmode="numeric" placeholder="from" data-filter="year-from"></label>
           <span aria-hidden="true">—</span>
-          <label><span class="visually-hidden">По год</span><input type="number" inputmode="numeric" placeholder="по" data-filter="year-to"></label>
+          <label><span class="visually-hidden">To year</span><input type="number" inputmode="numeric" placeholder="to" data-filter="year-to"></label>
         </div>
         {% if year_rows %}
-        <ul class="years" aria-label="Подходящие статьи по годам">
+        <ul class="years" aria-label="Fitting papers by year">
           {% for year, n in year_rows %}
             <li><button type="button" class="year-bar" data-year-pick="{{ year }}" aria-pressed="false">
               <span class="year-label">{{ year }}</span>
@@ -156,10 +154,10 @@
 
       {% if topics %}
       <div class="rail-block">
-        <label class="rail-label" for="f-topic">Тема</label>
+        <label class="rail-label" for="f-topic">Topic</label>
         <div class="select-wrap">
           <select id="f-topic" data-filter="topic">
-            <option value="">Все темы</option>
+            <option value="">All topics</option>
             {% for topic, n in topics %}<option value="{{ topic }}">{{ topic }} ({{ n }})</option>{% endfor %}
           </select>
           <svg aria-hidden="true"><use href="#i-chevron"/></svg>
@@ -167,41 +165,41 @@
       </div>
       {% endif %}
 
-      <button type="button" class="btn btn-ghost btn-block" data-filter-reset>Сбросить фильтры</button>
+      <button type="button" class="btn btn-ghost btn-block" data-filter-reset>Reset filters</button>
     </div>
   </aside>
 
-  <section class="papers" aria-label="Найденные статьи">
+  <section class="papers" aria-label="Found papers">
     <p class="papers-count" data-shown-count role="status"></p>
     {% for a in articles %}{% with loop_index = loop.index0 %}{% include "_article.html" %}{% endwith %}{% endfor %}
     <div class="papers-none" data-none hidden>
-      <p>Под выбранные фильтры статей нет.</p>
-      <button type="button" class="btn btn-ghost btn-small" data-filter-reset>Сбросить фильтры</button>
+      <p>No papers match the selected filters.</p>
+      <button type="button" class="btn btn-ghost btn-small" data-filter-reset>Reset filters</button>
     </div>
   </section>
 </div>
 {% endif %}
 
 {% if search.openalex_total and (can_more or s.position is defined) %}
-<section class="more" id="more" aria-label="Проверить больше статей">
+<section class="more" id="more" aria-label="Check more papers">
   {% if can_more %}
     {% set next_n = [config.ARTICLES_TO_SCORE, max_articles - s.total] | min %}
     <div class="more-text">
-      <p class="more-title">{% if visible_count < 5 %}Подходящих статей мало?{% else %}Нужно больше статей?{% endif %}</p>
-      <p>ИИ проверил {{ s.total }} из {{ "{:,}".format(search.openalex_total).replace(",", " ") }} статей в выдаче. Он может прочитать следующие {{ next_n }}, и подходящие добавятся в этот список.</p>
+      <p class="more-title">{% if visible_count < 5 %}Too few fitting papers?{% else %}Need more papers?{% endif %}</p>
+      <p>The AI checked {{ s.total }} of {{ "{:,}".format(search.openalex_total) }} papers in the results. It can read the next {{ next_n }}, and the ones that fit will be added to this list.</p>
     </div>
     <form method="post" action="{{ url_for('check_more', search_id=search.id) }}" data-more-form>
       {% if original_query %}<input type="hidden" name="original" value="{{ original_query }}">{% endif %}
-      <button type="submit" class="btn btn-primary">Проверить ещё {{ next_n }} статей<svg class="arrow" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <button type="submit" class="btn btn-primary">Check {{ next_n }} more paper{{ '' if next_n == 1 else 's' }}<svg class="arrow" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     </form>
   {% else %}
     <div class="more-text">
       {% if s.total >= max_articles %}
-        <p class="more-title">Это предел</p>
-        <p>ИИ проверил {{ s.total }} статей — это предел для одного запроса. Чтобы найти другие статьи, сформулируй запрос иначе.</p>
+        <p class="more-title">That is the limit</p>
+        <p>The AI checked {{ s.total }} papers, which is the limit for one query. To find other papers, phrase the query differently.</p>
       {% else %}
-        <p class="more-title">Ящик пуст</p>
-        <p>ИИ проверил все статьи, которые OpenAlex нашёл по этому запросу.</p>
+        <p class="more-title">The drawer is empty</p>
+        <p>The AI checked every paper OpenAlex found for this query.</p>
       {% endif %}
     </div>
   {% endif %}
@@ -210,8 +208,8 @@
 
 {% if without_abstract %}
 <details class="no-abstract">
-  <summary><span>Статьи без аннотации: {{ without_abstract | length }}. ИИ их не оценивал — проверь сам</span><svg aria-hidden="true"><use href="#i-chevron"/></svg></summary>
-  <p class="muted">У этих статей в OpenAlex нет аннотации, поэтому оценить их честно нельзя. Вместо них ИИ прочитал следующие статьи из выдачи.</p>
+  <summary><span>Papers without an abstract: {{ without_abstract | length }}. The AI did not score them, so check them yourself</span><svg aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+  <p class="muted">These papers have no abstract in OpenAlex, so they cannot be scored fairly. The AI read the next papers in the results instead.</p>
   <ul>
     {% for a in without_abstract %}
       <li><a href="{{ a.link }}" target="_blank" rel="noopener">{{ a.title }}</a>{% if a.year %} <span class="muted">{{ a.year }}</span>{% endif %}</li>

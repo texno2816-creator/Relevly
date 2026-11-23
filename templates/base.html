@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}ResearchLens — картотека, которая читает статьи за тебя{% endblock %}</title>
-  <meta name="description" content="ResearchLens находит научные статьи в OpenAlex, читает аннотации и оставляет только те, что подходят под твою тему, с объяснением.">
+  <title>{% block title %}ResearchLens — a card catalogue that reads papers for you{% endblock %}</title>
+  <meta name="description" content="ResearchLens finds research papers in OpenAlex, reads their abstracts and keeps only the ones that fit your topic, with an explanation.">
   <meta name="theme-color" content="#163a2d">
   <script>
     try { var t = localStorage.getItem("rl-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     document.documentElement.classList.add("js");
   </script>
-  <link rel="preload" href="{{ url_for('static', filename='fonts/cormorant-garamond-cyrillic-500-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ url_for('static', filename='fonts/cormorant-garamond-latin-500-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fonts.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="icon" href="{{ url_for('static', filename='lens.svg') }}" type="image/svg+xml">
@@ -29,10 +29,10 @@
     <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4.5 7h15M7.5 12h9M10.5 17h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
 
-  <a class="skip" href="#main">Перейти к содержимому</a>
+  <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="{{ url_for('index') }}" aria-label="ResearchLens, на главную">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="ResearchLens, home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
         <circle cx="13" cy="13" r="9.5" fill="none" stroke="currentColor" stroke-width="2.4"/>
         <path d="M8.6 10.2a5.2 5.2 0 0 1 4.1-2.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
@@ -40,12 +40,12 @@
       </svg>
       <span>Research<b>Lens</b></span>
     </a>
-    <nav class="site-nav" aria-label="Основная навигация">
-      <a href="{{ url_for('index') }}" {% if request.endpoint in ('index', 'results') %}aria-current="page"{% endif %}>Поиск</a>
-      <a href="{{ url_for('projects') }}" {% if request.endpoint == 'projects' %}aria-current="page"{% endif %}>Проекты<span class="nav-count" data-projects-count hidden></span></a>
-      <a class="nav-about" href="{{ url_for('about') }}" {% if request.endpoint == 'about' %}aria-current="page"{% endif %}>Как это работает</a>
-      {% if test_mode %}<a class="test-pill" href="{{ url_for('admin') }}" {% if request.endpoint == 'admin' %}aria-current="page"{% endif %}>Тест</a>{% endif %}
-      <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Сменить тему">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="{{ url_for('index') }}" {% if request.endpoint in ('index', 'results') %}aria-current="page"{% endif %}>Search</a>
+      <a href="{{ url_for('projects') }}" {% if request.endpoint == 'projects' %}aria-current="page"{% endif %}>Projects<span class="nav-count" data-projects-count hidden></span></a>
+      <a class="nav-about" href="{{ url_for('about') }}" {% if request.endpoint == 'about' %}aria-current="page"{% endif %}>How it works</a>
+      {% if test_mode %}<a class="test-pill" href="{{ url_for('admin') }}" {% if request.endpoint == 'admin' %}aria-current="page"{% endif %}>Test</a>{% endif %}
+      <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Switch theme">
         <svg class="theme-moon" aria-hidden="true"><use href="#i-moon"/></svg>
         <svg class="theme-sun" aria-hidden="true"><use href="#i-sun"/></svg>
       </button>
@@ -65,7 +65,7 @@
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-mark">Research<em>Lens</em></p>
-      <p>Статьи — из открытой базы <a href="https://openalex.org" target="_blank" rel="noopener">OpenAlex</a>. Оценку ставит ИИ по названию и аннотации, поэтому перед цитированием всегда читай статью сам. <a href="{{ url_for('about') }}">Как это работает</a>{% if test_mode %} · <a href="{{ url_for('test_logout') }}">Выйти из тестового режима</a>{% endif %}</p>
+      <p>Papers come from the open database <a href="https://openalex.org" target="_blank" rel="noopener">OpenAlex</a>. The AI scores them by title and abstract only, so always read a paper yourself before citing it. <a href="{{ url_for('about') }}">How it works</a>{% if test_mode %} · <a href="{{ url_for('test_logout') }}">Leave test mode</a>{% endif %}</p>
     </div>
   </footer>
 
@@ -76,7 +76,7 @@
         <span class="scan-front"><span class="label-holder"><span>OpenAlex</span></span></span>
       </div>
       <p class="scan-query" data-scan-query></p>
-      <p class="scan-step" data-scan-step>Ищу статьи в OpenAlex</p>
+      <p class="scan-step" data-scan-step>Searching OpenAlex</p>
       <ol class="scan-progress" aria-hidden="true"><li></li><li></li><li></li><li></li></ol>
     </div>
   </div>

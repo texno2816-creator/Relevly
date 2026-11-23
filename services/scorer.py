@@ -26,7 +26,7 @@ def parse_response(text):
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
     start, end = text.find("["), text.rfind("]")
     if start == -1 or end == -1:
-        raise ValueError("В ответе ИИ нет JSON-массива")
+        raise ValueError("The AI answer has no JSON array")
     items = json.loads(text[start:end + 1])
 
     parsed = {}

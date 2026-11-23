@@ -3,8 +3,8 @@
 (function () {
   "use strict";
 
-  var CATEGORY_LABELS = { Yes: "Подходит", Unclear: "Частично", No: "Не подходит" };
-  var TYPE_LABELS = { review: "Обзор", study: "Исследование", theory: "Метод или теория", other: "Другое" };
+  var CATEGORY_LABELS = { Yes: "Fits", Unclear: "Partly", No: "No fit" };
+  var TYPE_LABELS = { review: "Review", study: "Study", theory: "Method or theory", other: "Other" };
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -38,17 +38,17 @@
 
   var scan = $("[data-scan]");
   var SEARCH_STEPS = [
-    "Ищу статьи в OpenAlex",
-    "Убираю копии одной и той же статьи",
-    "ИИ читает аннотации — обычно 5–20 секунд",
-    "Сравниваю каждую статью с запросом",
-    "Почти готово"
+    "Searching OpenAlex",
+    "Removing duplicate copies of the same paper",
+    "The AI is reading abstracts, usually 5–20 seconds",
+    "Comparing each paper with your query",
+    "Almost done"
   ];
   var MORE_STEPS = [
-    "Беру следующие статьи из выдачи",
-    "ИИ читает новые аннотации",
-    "Сравниваю их с запросом",
-    "Добавляю подходящие в список"
+    "Taking the next papers from the results",
+    "The AI is reading new abstracts",
+    "Comparing them with your query",
+    "Adding the ones that fit to the list"
   ];
   var scanTimer = null;
   function showScan(query, steps) {
@@ -120,8 +120,8 @@
       if (armed) return;
       event.preventDefault();
       armed = true;
-      button.textContent = "Точно очистить? Нажми ещё раз";
-      setTimeout(function () { armed = false; button.textContent = "Очистить историю"; }, 5000);
+      button.textContent = "Are you sure? Press again";
+      setTimeout(function () { armed = false; button.textContent = "Clear history"; }, 5000);
     });
   });
 
@@ -173,7 +173,7 @@
     function stampFor(item) {
       var st = document.createElement("span");
       st.className = "stamp stamp--yes cc-stamp";
-      st.textContent = "Подходит";
+      st.textContent = "Fits";
       var b = document.createElement("b");
       b.textContent = item.score;
       st.appendChild(b);
@@ -318,7 +318,7 @@
     return ok;
   }
   function projectNames(projects) {
-    return Object.keys(projects).sort(function (a, b) { return a.localeCompare(b, "ru"); });
+    return Object.keys(projects).sort(function (a, b) { return a.localeCompare(b, "en"); });
   }
   function isSaved(projects, name, id) {
     return (projects[name] || []).some(function (a) { return a.id === id; });
@@ -339,7 +339,7 @@
       var article = JSON.parse(details.closest(".paper").dataset.article);
       var saved = savedAnywhere(projects, article.id);
       details.classList.toggle("is-saved", saved);
-      $("[data-save-label]", details).textContent = saved ? "Сохранено" : "Сохранить";
+      $("[data-save-label]", details).textContent = saved ? "Saved" : "Save";
     });
   }
   updateNavCount();
@@ -375,11 +375,11 @@
         all[name] = all[name] || [];
         if (isSaved(all, name, article.id)) {
           all[name] = all[name].filter(function (a) { return a.id !== article.id; });
-          setStatus(details, saveProjects(all) ? "Убрано из «" + name + "»" : "Браузер не дал сохранить изменения");
+          setStatus(details, saveProjects(all) ? "Removed from “" + name + "”" : "The browser did not allow saving the changes");
         } else {
           article.saved_at = new Date().toISOString();
           all[name].push(article);
-          setStatus(details, saveProjects(all) ? "Сохранено в «" + name + "»" : "Браузер не дал сохранить изменения");
+          setStatus(details, saveProjects(all) ? "Saved to “" + name + "”" : "The browser did not allow saving the changes");
         }
         renderSaveList(details);
       });
@@ -400,7 +400,7 @@
       event.preventDefault();
       var input = $("input", event.target);
       var name = input.value.trim();
-      if (!name) { setStatus(details, "Введи название проекта"); input.focus(); return; }
+      if (!name) { setStatus(details, "Enter a project name"); input.focus(); return; }
       var article = JSON.parse(details.closest(".paper").dataset.article);
       var all = loadProjects();
       all[name] = all[name] || [];
@@ -408,7 +408,7 @@
         article.saved_at = new Date().toISOString();
         all[name].push(article);
       }
-      setStatus(details, saveProjects(all) ? "Сохранено в «" + name + "»" : "Браузер не дал сохранить изменения");
+      setStatus(details, saveProjects(all) ? "Saved to “" + name + "”" : "The browser did not allow saving the changes");
       input.value = "";
       renderSaveList(details);
     });
@@ -468,7 +468,7 @@
     if (!focusRange) return;
     var min = parseFloat(focusRange.min), max = parseFloat(focusRange.max), v = parseFloat(focusRange.value);
     focusRange.style.setProperty("--pct", ((v - min) / (max - min) * 100).toFixed(1) + "%");
-    if (focusOut) focusOut.textContent = "от " + v.toFixed(1).replace(".", ",");
+    if (focusOut) focusOut.textContent = "from " + v.toFixed(1);
   }
 
   function filterValue(name) {
@@ -530,8 +530,8 @@
     var counter = $("[data-shown-count]");
     if (counter) {
       counter.textContent = shown === papers.length
-        ? "Статей в списке: " + shown
-        : "Показано " + shown + " из " + papers.length + " по фильтрам";
+        ? "Papers in the list: " + shown
+        : "Showing " + shown + " of " + papers.length + " with filters";
     }
     var none = $("[data-none]");
     if (none) none.hidden = shown !== 0;
@@ -614,21 +614,14 @@
     var cat = String(category || "No");
     var st = document.createElement("span");
     st.className = "stamp stamp--small stamp--" + cat.toLowerCase();
-    var text = Number(score).toFixed(1).replace(".", ",");
+    var text = Number(score).toFixed(1);
     st.setAttribute("role", "img");
-    st.setAttribute("aria-label", "Релевантность " + text + " из 10, " + (CATEGORY_LABELS[cat] || "").toLowerCase());
+    st.setAttribute("aria-label", "Relevance " + text + " out of 10, " + (CATEGORY_LABELS[cat] || "").toLowerCase());
     st.textContent = CATEGORY_LABELS[cat] || "";
     var b = document.createElement("b");
     b.textContent = text;
     st.appendChild(b);
     return st;
-  }
-
-  function plural(n, one, few, many) {
-    var m10 = n % 10, m100 = n % 100;
-    if (m10 === 1 && m100 !== 11) return one;
-    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
-    return many;
   }
 
   function renderProjects() {
@@ -649,7 +642,7 @@
       face.className = "project-face";
       var count = document.createElement("span");
       count.className = "project-count";
-      count.textContent = items.length + " " + plural(items.length, "статья", "статьи", "статей");
+      count.textContent = items.length + " " + (items.length === 1 ? "paper" : "papers");
       var holder = document.createElement("span");
       holder.className = "label-holder";
       var title = document.createElement("h2");
@@ -659,13 +652,13 @@
       var del = document.createElement("button");
       del.type = "button";
       del.className = "btn btn-danger btn-small";
-      del.textContent = "Удалить проект";
+      del.textContent = "Delete project";
       var armed = false;
       del.addEventListener("click", function () {
         if (!armed) {
           armed = true;
-          del.textContent = "Точно удалить? Нажми ещё раз";
-          setTimeout(function () { armed = false; del.textContent = "Удалить проект"; }, 5000);
+          del.textContent = "Are you sure? Press again";
+          setTimeout(function () { armed = false; del.textContent = "Delete project"; }, 5000);
           return;
         }
         var all = loadProjects();
@@ -683,7 +676,7 @@
       if (!items.length) {
         var empty = document.createElement("li");
         empty.className = "project-empty";
-        empty.textContent = "Ящик пока пуст. Нажми «Сохранить» у статьи в результатах поиска.";
+        empty.textContent = "This drawer is empty. Press “Save” on a paper in the search results.";
         list.appendChild(empty);
       }
       items.forEach(function (a) {
@@ -712,8 +705,8 @@
         var remove = document.createElement("button");
         remove.type = "button";
         remove.className = "btn btn-ghost btn-small";
-        remove.textContent = "Убрать";
-        remove.setAttribute("aria-label", "Убрать «" + a.title + "» из проекта");
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", "Remove “" + a.title + "” from the project");
         remove.addEventListener("click", function () {
           li.classList.add("is-leaving");
           setTimeout(function () {

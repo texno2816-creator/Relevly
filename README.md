@@ -13,7 +13,7 @@ In June 2026 I started a research paper on how quickly an AI reaches a plateau d
 1. **Search.** The query goes to [OpenAlex](https://openalex.org), an open database of research papers. Duplicate records of the same paper are removed.
 2. **Reading.** An AI model (gpt-oss-20b) reads the title and abstract of each of the first 20 papers. It splits the query into the main part, the secondary part and details, and gives every paper a score from 1 to 10 with a one-sentence reason.
 3. **Filtering.** Papers scored 7.5+ are shown as fitting, 4.0–7.4 as partly fitting, and the rest are hidden. Papers without an abstract are not scored but are listed separately, so the user can check them.
-4. **Working with results.** Filters by score, year, topic and type of work; a “check 20 more” button; typo correction; projects to save papers in. The interface is in Russian.
+4. **Working with results.** Filters by score, year, topic and type of work; a “check 20 more” button; typo correction; projects to save papers in. The interface is in English.
 
 ![Search results](docs/images/results.png)
 

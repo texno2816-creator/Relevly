@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}{{ title or "Ошибка" }} — ResearchLens{% endblock %}
+{% block title %}{{ title or "Error" }} — ResearchLens{% endblock %}
 {% block content %}
 <section class="empty empty--page">
-  <h1>{{ title or "Что-то пошло не так" }}</h1>
+  <h1>{{ title or "Something went wrong" }}</h1>
   <p>{{ message }}</p>
   {% if query %}
-    <p><a class="btn btn-primary" href="{{ url_for('search', q=query) }}">Повторить поиск</a></p>
+    <p><a class="btn btn-primary" href="{{ url_for('search', q=query) }}">Try the search again</a></p>
   {% else %}
-    <p><a class="btn btn-primary" href="{{ url_for('index') }}">К поиску</a></p>
+    <p><a class="btn btn-primary" href="{{ url_for('index') }}">Back to search</a></p>
   {% endif %}
 </section>
 {% endblock %}

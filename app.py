@@ -14,12 +14,12 @@ app.secret_key = config.SECRET_KEY
 storage.init_db()
 
 WORK_TYPE_LABELS = {
-    "review": "Обзор",
-    "study": "Исследование",
-    "theory": "Метод или теория",
-    "other": "Другое",
+    "review": "Review",
+    "study": "Study",
+    "theory": "Method or theory",
+    "other": "Other",
 }
-CATEGORY_LABELS = {"Yes": "Подходит", "Unclear": "Частично", "No": "Не подходит"}
+CATEGORY_LABELS = {"Yes": "Fits", "Unclear": "Partly", "No": "No fit"}
 
 
 def is_test_mode():
@@ -87,12 +87,12 @@ def search():
         results, stats = scorer.score_articles(query, batch["to_score"] + batch["without_abstract"])
     except llm_client.LLMError as e:
         return render_template("error.html", query=query,
-                               title="ИИ не смог оценить статьи",
+                               title="The AI could not score the papers",
                                message=str(e)), 502
     except requests.RequestException as e:
         return render_template("error.html", query=query,
-                               title="База статей OpenAlex не ответила",
-                               message=f"Попробуй ещё раз через минуту. Техническая причина: {e}"), 502
+                               title="The OpenAlex database did not respond",
+                               message=f"Try again in a minute. Technical reason: {e}"), 502
 
     stats["duplicates"] = batch["duplicates"]
     stats["position"] = batch["position"]
@@ -124,7 +124,7 @@ def check_more(search_id):
     original = request.form.get("original") or None
     back = url_for("results", search_id=search_id, original=original, _anchor="more")
     if not can_check_more(data):
-        flash("Больше статей по этому запросу проверить нельзя.")
+        flash("No more papers can be checked for this query.")
         return redirect(back)
 
     stats = data["stats"]
@@ -137,16 +137,16 @@ def check_more(search_id):
         if not batch["to_score"] and not batch["without_abstract"]:
             stats["position"] = data["openalex_total"] or stats["position"]
             storage.update_search(search_id, old_results, stats)
-            flash("В выдаче OpenAlex больше нет новых статей по этому запросу.")
+            flash("OpenAlex has no more new papers for this query.")
             return redirect(back)
         new_results, new_stats = scorer.score_articles(data["query"], batch["to_score"] + batch["without_abstract"])
     except llm_client.LLMError as e:
         return render_template("error.html", query=data["query"],
-                               title="ИИ не смог оценить следующие статьи", message=str(e)), 502
+                               title="The AI could not score the next papers", message=str(e)), 502
     except requests.RequestException as e:
         return render_template("error.html", query=data["query"],
-                               title="База статей OpenAlex не ответила",
-                               message=f"Попробуй ещё раз через минуту. Техническая причина: {e}"), 502
+                               title="The OpenAlex database did not respond",
+                               message=f"Try again in a minute. Technical reason: {e}"), 502
 
     for key in ("seconds", "tokens", "total", "yes", "unclear", "no", "no_abstract", "errors"):
         stats[key] = round(stats.get(key, 0) + new_stats[key], 1)
@@ -157,7 +157,7 @@ def check_more(search_id):
     merged = sorted(old_results + new_results, key=lambda a: a["score"], reverse=True)
     storage.update_search(search_id, merged, stats)
     found = new_stats["yes"] + new_stats["unclear"]
-    flash(f"Проверено ещё {new_stats['total']} статей, подходящих среди них: {found}.")
+    flash(f"Checked {new_stats['total']} more papers, {found} of them fit.")
     return redirect(back)
 
 
@@ -204,7 +204,7 @@ def support():
     query = request.form.get("query", "")
     if message:
         storage.save_support_message(query, message, (request.form.get("contact") or "").strip())
-        flash("Сообщение отправлено. Спасибо, что помогаешь улучшить поиск.")
+        flash("Message sent. Thank you for helping to improve the search.")
     back = request.form.get("back") or ""
     # Only redirect back to pages of this site
     return redirect(back if back.startswith("/") else url_for("index"))
@@ -234,7 +234,7 @@ def test_login():
             session["test_mode"] = True
             target = request.args.get("next") or ""
             return redirect(target if target.startswith("/") else url_for("admin"))
-        flash("Неверный пароль")
+        flash("Wrong password")
     return render_template("test_login.html")
 
 
@@ -259,14 +259,14 @@ def admin():
 @test_mode_required
 def admin_clear():
     storage.clear_history()
-    flash("История поисков очищена. Следующие запросы будут оценены заново.")
+    flash("Search history cleared. The next queries will be scored again.")
     return redirect(url_for("admin"))
 
 
 @app.errorhandler(404)
 def not_found(_):
-    return render_template("error.html", title="Такой страницы нет",
-                           message="Проверь адрес или начни новый поиск."), 404
+    return render_template("error.html", title="This page does not exist",
+                           message="Check the address or start a new search."), 404
 
 
 if __name__ == "__main__":

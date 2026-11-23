@@ -135,7 +135,7 @@ def test_user_sees_only_relevant_and_no_abstract_block(client, monkeypatch):
     assert r.status_code == 200
     assert "Good" in html and "Medium" in html
     assert "Medicine" not in html
-    assert "Статьи без аннотации: 1" in html and "NoAbstract" in html
+    assert "Papers without an abstract: 1" in html and "NoAbstract" in html
     assert html.count('class="paper ') == 2
 
     n = len(calls)
@@ -147,13 +147,13 @@ def test_test_mode_sees_everything(client, monkeypatch):
     patch_search(monkeypatch, {"Good": 9, "Medium": 5, "Medicine": 1, "Missing": 2}, [])
     client.post("/test-login", data={"password": "secret"})
     html = client.get("/search?q=x", follow_redirects=True).get_data(as_text=True)
-    assert "Medicine" in html and "Тестовый режим" in html and "Убрано дубликатов" in html
+    assert "Medicine" in html and "Test mode" in html and "Duplicates removed" in html
 
 
 def test_empty_result_support_admin_and_clear(client, monkeypatch):
     patch_search(monkeypatch, {"Good": 2, "Medium": 1, "Medicine": 1, "Missing": 1}, [])
     html = client.get("/search?q=very+narrow", follow_redirects=True).get_data(as_text=True)
-    assert "Подходящих статей среди первых" in html
+    assert "None of the first" in html
 
     client.post("/support", data={"query": "very narrow", "message": "help", "contact": "", "back": "https://evil.example"})
     assert client.get("/admin").status_code == 302
@@ -163,13 +163,13 @@ def test_empty_result_support_admin_and_clear(client, monkeypatch):
 
     client.post("/admin/clear")
     admin = client.get("/admin").get_data(as_text=True)
-    assert "Пока пусто" in admin and "help" in admin
+    assert "Empty so far" in admin and "help" in admin
 
 
 def test_nothing_found_in_openalex(client, monkeypatch):
     monkeypatch.setattr(openalex, "search", lambda q, free_only=True, limit=None, page=1: ([], 0))
     html = client.get("/search?q=brian+nerral", follow_redirects=True).get_data(as_text=True)
-    assert "OpenAlex не нашёл ни одной статьи" in html and "среди первых 0" not in html
+    assert "OpenAlex found no papers" in html and "None of the first 0" not in html
 
 
 def test_typo_is_corrected_like_google(client, monkeypatch):
@@ -182,13 +182,13 @@ def test_typo_is_corrected_like_google(client, monkeypatch):
     monkeypatch.setattr(spelling, "correct_query", lambda q: "brain's neural signals")
 
     html = client.get("/search?q=Brian's+nerral+signals", follow_redirects=True).get_data(as_text=True)
-    assert "Показаны результаты по запросу" in html and "Good" in html
+    assert "Showing results for" in html and "Good" in html
 
     html = client.get("/search?q=Brian's+nerral+signals&exact=1", follow_redirects=True).get_data(as_text=True)
-    assert "OpenAlex не нашёл ни одной статьи" in html and "Показаны результаты" not in html
+    assert "OpenAlex found no papers" in html and "Showing results" not in html
 
     html = client.get("/search?q=Brian's+nerral+signals", follow_redirects=True).get_data(as_text=True)
-    assert "Показаны результаты по запросу" in html
+    assert "Showing results for" in html
 
 
 def test_spelling_ignores_rewrites(monkeypatch):
@@ -237,7 +237,7 @@ def test_check_more_adds_next_articles(client, monkeypatch):
     r = client.get("/search?q=papers")
     search_id = int(r.headers["Location"].split("/results/")[1].split("?")[0])
     html = client.get(f"/results/{search_id}").get_data(as_text=True)
-    assert html.count('class="paper ') == 2 and "Проверить ещё 2 статей" in html
+    assert html.count('class="paper ') == 2 and "Check 2 more papers" in html
 
     client.post(f"/results/{search_id}/more")
     html = client.get(f"/results/{search_id}").get_data(as_text=True)
@@ -249,7 +249,7 @@ def test_check_more_adds_next_articles(client, monkeypatch):
     client.post(f"/results/{search_id}/more")
     client.post(f"/results/{search_id}/more")
     html = client.get(f"/results/{search_id}").get_data(as_text=True)
-    assert html.count('class="paper ') == 7 and "проверил все статьи" in html
+    assert html.count('class="paper ') == 7 and "checked every paper" in html
 
 
 def test_check_more_respects_limit(client, monkeypatch):
@@ -260,10 +260,10 @@ def test_check_more_respects_limit(client, monkeypatch):
     monkeypatch.setattr(llm_client, "chat", fake_chat_factory({f"Paper {i}": 9 for i in range(1, 10)}, []))
     r = client.get("/search?q=limit")
     search_id = int(r.headers["Location"].split("/results/")[1].split("?")[0])
-    assert "Проверить ещё 1 статей" in client.get(f"/results/{search_id}").get_data(as_text=True)
+    assert "Check 1 more paper" in client.get(f"/results/{search_id}").get_data(as_text=True)
     client.post(f"/results/{search_id}/more")
     html = client.get(f"/results/{search_id}").get_data(as_text=True)
-    assert html.count('class="paper ') == 3 and "это предел для одного запроса" in html
+    assert html.count('class="paper ') == 3 and "the limit for one query" in html
 
 
 def test_other_pages(client):

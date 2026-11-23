@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS searches (
     provider TEXT,
     model TEXT,
     openalex_total INTEGER,
-    is_empty INTEGER NOT NULL,      -- 1, если пользователю не показано ни одной оценённой статьи
+    is_empty INTEGER NOT NULL,      -- 1 if no scored paper was shown to the user
     stats_json TEXT NOT NULL,
-    results_json TEXT NOT NULL,     -- все статьи, включая No и статьи без аннотации
-    version TEXT                    -- версия правил оценки (config.PROMPT_VERSION)
+    results_json TEXT NOT NULL,     -- all papers, including No and papers without an abstract
+    version TEXT                    -- version of the scoring rules (config.PROMPT_VERSION)
 );
 CREATE TABLE IF NOT EXISTS support_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

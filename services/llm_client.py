@@ -23,7 +23,7 @@ class RequestTooLarge(LLMError):
 def _api_key(provider):
     key = config.GROQ_API_KEY if provider == "groq" else config.OPENROUTER_API_KEY
     if not key:
-        raise LLMError(f"Не указан ключ для провайдера '{provider}' в файле .env")
+        raise LLMError(f"No API key set for provider '{provider}' (check the .env file or environment variables)")
     return key
 
 
@@ -49,7 +49,7 @@ def chat(messages, provider=None, model=None):
     provider = provider or config.LLM_PROVIDER
     model = model or config.LLM_MODEL
     if provider not in PROVIDERS:
-        raise LLMError(f"Неизвестный провайдер: {provider}")
+        raise LLMError(f"Unknown provider: {provider}")
 
     headers = {
         "Authorization": f"Bearer {_api_key(provider)}",
@@ -69,14 +69,14 @@ def chat(messages, provider=None, model=None):
 
         # 413: the request is larger than the per-minute limit; retrying won't help, the batch must be split
         if response.status_code == 413:
-            raise RequestTooLarge(f"Запрос слишком большой для лимита {provider}: {response.text[:200]}")
+            raise RequestTooLarge(f"Request is too large for the {provider} limit: {response.text[:200]}")
 
         if response.status_code != 200:
-            raise LLMError(f"Ошибка {response.status_code} от {provider}: {response.text[:300]}")
+            raise LLMError(f"Error {response.status_code} from {provider}: {response.text[:300]}")
 
         data = response.json()
         text = data["choices"][0]["message"].get("content") or ""
         tokens = (data.get("usage") or {}).get("total_tokens", 0)
         return text, tokens
 
-    raise LLMError(f"{provider} не ответил после {MAX_RETRIES} попыток (лимиты или сбой)")
+    raise LLMError(f"{provider} did not respond after {MAX_RETRIES} attempts (rate limits or an outage)")

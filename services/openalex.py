@@ -42,7 +42,7 @@ def simplify_work(work):
     topics = [t.get("display_name") for t in (work.get("topics") or []) if t.get("display_name")]
     return {
         "id": openalex_id.rsplit("/", 1)[-1],
-        "title": work.get("display_name") or "(без названия)",
+        "title": work.get("display_name") or "(untitled)",
         "year": work.get("publication_year"),
         "abstract": rebuild_abstract(work.get("abstract_inverted_index")),
         "is_free": bool(open_access.get("is_oa")),
