@@ -1,4 +1,6 @@
-# ResearchLens
+# Relevly
+
+**Live site: https://researchlens-m02y.onrender.com**
 
 An AI guide that searches hundreds of millions of research papers and keeps only the ones that actually fit your topic, with a one-line reason for each.
 
@@ -6,7 +8,14 @@ An AI guide that searches hundreds of millions of research papers and keeps only
 
 ## Why I built it
 
-In June 2026 I started a research paper on how quickly an AI reaches a plateau during training. I found more than 2,000 papers. I planned to go through the first 50, but each of the first papers took me more than two hours to read and judge. Most of them only applied machine learning in other fields, such as chemistry or biology, but search engines still showed them because the words matched. I built ResearchLens so that students like me can skip that filtering and spend their time on the papers that matter.
+In June 2026 I started a research paper on how quickly an AI reaches a plateau during training. I found more than 2,000 papers. I planned to go through the first 50, but each of the first papers took me more than two hours to read and judge. Most of them only applied machine learning in other fields, such as chemistry or biology, but search engines still showed them because the words matched. I built Relevly so that students like me can skip that filtering and spend their time on the papers that matter.
+
+## What makes it different
+
+- **Rules you can see.** Every paper is scored by the same written rules: the main part of the query must be present in the abstract. The category (fits / partly / no fit) is calculated from the score by the program, not by the AI.
+- **Tested against a human.** Accuracy is measured on 60 papers rated by hand and compared with Google Scholar (see below), not only on vendor benchmarks.
+- **A reason for every paper,** and papers without an abstract are listed separately instead of being guessed.
+- **Free, no sign-up, open source,** built by a student for school and university students.
 
 ## How it works
 
@@ -19,7 +28,7 @@ In June 2026 I started a research paper on how quickly an AI reaches a plateau d
 
 ## Results so far
 
-- **Speed:** reviewing 20 papers by hand took me 40–70 minutes; ResearchLens scores them in about 5.5 seconds.
+- **Speed:** reviewing 20 papers by hand took me 40–70 minutes; Relevly scores them in about 5.5 seconds.
 - **Accuracy:** on 60 papers I rated by hand, the chosen model matched my judgement in 71.7% of cases (80% if “fits” and “partly fits” are treated as one group). For comparison, the first 20 Google Scholar results for my own query had 15% strict and 40% soft accuracy.
 - **Model choice:** I compared three models on the same 60 papers for accuracy, stability and speed before choosing gpt-oss-20b.
 
@@ -41,6 +50,10 @@ python app.py
 ```
 
 and open http://127.0.0.1:5000. Tests: `python -m pytest`.
+
+## Name
+
+The project was called ResearchLens until November 2026. It was renamed to Relevly because many unrelated projects use the ResearchLens name.
 
 ## Documentation
 

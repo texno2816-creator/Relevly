@@ -1,4 +1,4 @@
-# ResearchLens — Project Documentation
+# Relevly (formerly ResearchLens) — Project Documentation
 
 *Version of 30 October 2026. Translated from the original Russian documentation.*
 
@@ -34,7 +34,7 @@ After five papers I noticed that most of them were about AI and machine learning
 
 **Goal:** give school and university students a free platform that helps them find sources for research papers. This could help them write papers and research much faster and more accurately.
 
-**Hypothesis:** any student can collect relevant sources for their research with ResearchLens much faster than with ordinary article search. I expect finding the right papers to become more than 10 times faster, with strict accuracy of up to 80% and soft accuracy of up to 90%.
+**Hypothesis:** any student can collect relevant sources for their research with Relevly much faster than with ordinary article search. I expect finding the right papers to become more than 10 times faster, with strict accuracy of up to 80% and soft accuracy of up to 90%.
 
 ## Step 1 — Baseline: how accurate is ordinary search?
 

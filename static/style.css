@@ -1356,3 +1356,4 @@ html:not(.js) [data-abstract-toggle] { display: none; }
 }
 .project-item .punch { background: #0b2219; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6); }
 .project-face .label-holder h2 { width: 100%; }
+.method--why { padding-top: 0; }

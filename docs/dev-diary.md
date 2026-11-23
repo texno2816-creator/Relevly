@@ -1,4 +1,4 @@
-# ResearchLens — Development Diary
+# Relevly (formerly ResearchLens) — Development Diary
 
 *Translated from the original Russian diary. Detailed result tables are in the [project documentation](documentation.md).*
 
@@ -7,7 +7,7 @@
 *This section was written in October 2026, from memory and from the files that survive from that time. I did not keep a diary in the summer, so the dates below come from the dates of those files.*
 
 - **May 2026.** I came up with the idea of an AI research paper: how quickly an AI reaches a plateau during training. Because of school exams and the SAT, I postponed it until June.
-- **June 2026.** I started the research and ran into the problem that led to ResearchLens. I found more than 2,000 papers; I planned to go through the first 50, but each of the first papers took me more than two hours to read and judge. Most of them only applied machine learning in other fields, but search engines still showed them for my query.
+- **June 2026.** I started the research and ran into the problem that led to Relevly. I found more than 2,000 papers; I planned to go through the first 50, but each of the first papers took me more than two hours to read and judge. Most of them only applied machine learning in other fields, but search engines still showed them for my query.
 - **23 June 2026.** First experiment: a short script (`test.py`) that searches the Semantic Scholar API and prints titles, years, citation counts and abstracts.
 - **25 June 2026.** First prototype of the website: Flask, Semantic Scholar + OpenAlex search, removal of duplicates by DOI, a Research Fit Score and a Credibility Score, a short AI summary and a Deep Analysis mode through Groq (llama-3.3-70b-versatile), and export of citations in APA and BibTeX. The same day a document called “ResearchLens 2.0” was prepared with recommendations for rebuilding the project: modular architecture, keys in `.env`, error handling, a cleaner interface. The prototype code is kept in [`legacy/prototype-june-2026`](../legacy/prototype-june-2026).
 - **July – September 2026.** The project was on pause while I prepared for the SAT and IELTS.

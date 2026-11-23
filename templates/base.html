@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}ResearchLens — a card catalogue that reads papers for you{% endblock %}</title>
-  <meta name="description" content="ResearchLens finds research papers in OpenAlex, reads their abstracts and keeps only the ones that fit your topic, with an explanation.">
+  <title>{% block title %}Relevly — find the research papers that actually fit, and see why{% endblock %}</title>
+  <meta name="description" content="Relevly finds research papers in OpenAlex, reads their abstracts and keeps only the ones that fit your topic, with a reason for each. Free, no sign-up, open source.">
   <meta name="theme-color" content="#163a2d">
   <script>
     try { var t = localStorage.getItem("rl-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -32,13 +32,13 @@
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="{{ url_for('index') }}" aria-label="ResearchLens, home">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="Relevly, home">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
         <circle cx="13" cy="13" r="9.5" fill="none" stroke="currentColor" stroke-width="2.4"/>
         <path d="M8.6 10.2a5.2 5.2 0 0 1 4.1-2.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
         <path d="M20.2 20.2 27 27" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
       </svg>
-      <span>Research<b>Lens</b></span>
+      <span>Relev<b>ly</b></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="{{ url_for('index') }}" {% if request.endpoint in ('index', 'results') %}aria-current="page"{% endif %}>Search</a>
@@ -64,7 +64,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p class="footer-mark">Research<em>Lens</em></p>
+      <p class="footer-mark">Relev<em>ly</em></p>
       <p>Papers come from the open database <a href="https://openalex.org" target="_blank" rel="noopener">OpenAlex</a>. The AI scores them by title and abstract only, so always read a paper yourself before citing it. <a href="{{ url_for('about') }}">How it works</a>{% if test_mode %} · <a href="{{ url_for('test_logout') }}">Leave test mode</a>{% endif %}</p>
     </div>
   </footer>
