@@ -1,6 +1,6 @@
 # Relevly
 
-**Live site: https://researchlens-m02y.onrender.com**
+**Live site: https://relevly.onrender.com**
 
 An AI guide that searches hundreds of millions of research papers and keeps only the ones that actually fit your topic, with a one-line reason for each.
 
